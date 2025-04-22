@@ -1,0 +1,45 @@
+services:
+
+  xp-service:
+    build:
+      context: ../../life-xp-xp-service/life-xp-xp-service-main
+      dockerfile: Dockerfile
+    image: life-xp-xp-service:latest
+    ports:
+      - "8084:8084"
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    environment:
+      SPRING_CASSANDRA_KEYSPACE_NAME: xp_keyspace
+      SPRING_CASSANDRA_CONTACT_POINTS: cassandra
+      SPRING_CASSANDRA_PORT: 9042
+      SPRING_CASSANDRA_LOCAL_DATACENTER: datacenter1
+      SPRING_CASSANDRA_SCHEMA_ACTION: CREATE_IF_NOT_EXISTS
+    networks:
+      - life-xp-net
+
+  cassandra:
+    image: cassandra:4.1
+    container_name: cassandra
+    ports:
+      - "9042:9042"
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+    environment:
+      - CASSANDRA_CLUSTER_NAME=xp_cluster
+      - CASSANDRA_DC=datacenter1
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -u cassandra -p cassandra -e 'describe keyspaces'"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    networks:
+      - life-xp-net
+
+volumes:
+  cassandra_data:
+
+networks:
+  life-xp-net:
+    external: true

@@ -1,0 +1,4 @@
+networks:
+  life-xp-net:
+    name: life-xp-net
+    driver: bridge

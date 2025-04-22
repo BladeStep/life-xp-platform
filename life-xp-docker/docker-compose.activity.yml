@@ -1,0 +1,42 @@
+services:
+  activity-service:
+    build:
+      context: ../../life-xp-activity-service/life-xp-activity-service-main
+      dockerfile: Dockerfile
+    image: life-xp-activity-service:latest
+    ports:
+      - "8083:8083"
+    depends_on:
+      - mongodb
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    networks:
+      - life-xp-net
+
+  mongodb:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - life-xp-net
+
+  mongo-express:
+    image: mongo-express:1.0.0
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodb
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017/mongodb
+      ME_CONFIG_BASICAUTH: "false"
+    networks:
+      - life-xp-net
+
+volumes:
+  mongodb_data:
+
+networks:
+  life-xp-net:
+    external: true
