@@ -11,4 +11,5 @@ docker-compose -f docker-compose.yml \
                -f docker-compose.activity.yml \
                -f docker-compose.kafka.yml \
                -f docker-compose.xp.yml \
+               -f docker-compose.auth.yml \
                up --build

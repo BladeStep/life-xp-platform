@@ -1,0 +1,16 @@
+services:
+  auth-service:
+    build:
+      context: ../../life-xp-auth-service
+      dockerfile: Dockerfile
+    image: life-xp-auth-service:latest
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    networks:
+      - life-xp-net
+
+networks:
+  life-xp-net:
+    external: true
